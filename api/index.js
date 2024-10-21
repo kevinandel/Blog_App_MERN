@@ -5,12 +5,14 @@ const mongoose = require("mongoose");
 const UserModel = require("./models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 const salt = bcrypt.genSaltSync(10);
 const secret = "1rwefgt345tfwt452";
 
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose.connect(
   "mongodb+srv://kevinandel11:Giftofgod11@cluster0.1xnb7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -45,6 +47,14 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
+});
+
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, (error, info) => {
+    if (error) throw error;
+    res.json(info);
+  });
 });
 
 app.listen(4000);
