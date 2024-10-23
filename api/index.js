@@ -17,6 +17,7 @@ const secret = "1rwefgt345tfwt452";
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 mongoose.connect(
   "mongodb+srv://kevinandel11:Giftofgod11@cluster0.1xnb7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -41,10 +42,10 @@ app.post("/login", async (req, res) => {
     const userDoc = await UserModel.findOne({ username });
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
-      jwt.sign({ username, id: userDoc.id }, secret, {}, (error, token) => {
+      jwt.sign({ username, id: userDoc._id }, secret, {}, (error, token) => {
         if (error) throw error;
         res.cookie("token", token).json({
-          id: userDoc.id,
+          id: userDoc._id,
           username,
         });
       });
@@ -75,15 +76,24 @@ app.post("/create", uploadMiddleware.single("file"), async (req, res) => {
   const newPath = path + "." + ext;
   fs.renameSync(path, newPath);
 
-  const { title, summary, content } = req.body;
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (error, info) => {
+    if (error) throw error;
+    const { title, summary, content } = req.body;
 
-  const postDoc = await PostModel.create({
-    title,
-    summary,
-    content,
-    cover: newPath,
+    const postDoc = await PostModel.create({
+      title,
+      summary,
+      content,
+      cover: newPath,
+      author: info.id,
+    });
+    res.json(postDoc);
   });
-  res.json(postDoc);
+});
+
+app.get("/create", async (req, res) => {
+  res.json(await PostModel.find().populate("author", ["username"]).sort({createdAt: -1}).limit(20));
 });
 
 app.listen(4000);

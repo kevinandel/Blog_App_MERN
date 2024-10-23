@@ -49,6 +49,7 @@ function CreatePost() {
     const response = await fetch("http://localhost:4000/create", {
       method: "POST",
       body: data,
+      credentials: "include",
     });
     if (response.ok) {
       setRedirect(true);

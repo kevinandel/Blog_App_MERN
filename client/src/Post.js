@@ -1,24 +1,22 @@
 import React from "react";
+import { formatISO9075 } from "date-fns";
 
-function Post() {
+function Post({ title, summary, content, cover, createdAt, author }) {
   return (
     <div className="post">
       <div className="image">
         <img
-          src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src={"http://localhost:4000/" + cover}
           alt=""
         />
       </div>
       <div className="texts">
-        <h2>Without a doubt</h2>
+        <h2>{title}</h2>
         <p className="info">
-          <a className="author">Kevin Andel Josy</a>
-          <time>13-10-2024 09:02</time>
+          <a className="author">{author.username}</a>
+          <time>{formatISO9075(createdAt)}</time>
         </p>
-        <p className="summary">
-          The Rule comes from interior design; it works very well for UI design
-          as it creates balance and helps the user to navigate with ease.
-        </p>
+        <p className="summary">{summary}</p>
       </div>
     </div>
   );
