@@ -107,6 +107,7 @@ button {
   color: #fff;
   border-radius: 5px;
   padding: 7px 0;
+  cursor: pointer;
 }
 
 form.login h1,
@@ -152,4 +153,102 @@ div.post-page div.author {
 
 div.post-page div.content p {
   line-height: 1.6rem;
+}
+
+div.edit-delete-row {
+  text-align: center;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+div.post-page a.edit-btn {
+  background-color: #333;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #d2d2d2;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+div.post-page a.edit-btn:hover {
+  background-color: #434343;
+}
+
+div.post-page a.delete-btn {
+  background-color: #a53939;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #d2d2d2;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+div.post-page a.delete-btn:hover {
+  background-color: #a53939ef;
+}
+
+a svg {
+  height: 20px;
+}
+
+/* ConfirmModal */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.confirm-button,
+.cancel-button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.confirm-button {
+  background-color: #d9534f;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #ad3b37;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #5bc0de;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #459bb5;
+  color: white;
 }

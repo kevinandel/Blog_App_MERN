@@ -92,6 +92,38 @@ app.post("/create", uploadMiddleware.single("file"), async (req, res) => {
   });
 });
 
+app.put("/create", uploadMiddleware.single("file"), async (req, res) => {
+  let newPath = null;
+  if (req.file) {
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
+    const ext = parts[parts.length - 1];
+    newPath = path + "." + ext;
+    fs.renameSync(path, newPath);
+  }
+
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (error, info) => {
+    if (error) throw error;
+    const { id, title, summary, content } = req.body;
+    const postDoc = await PostModel.findById(id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json("You are not the author");
+    }
+    await PostModel.updateOne(
+      { _id: id },
+      {
+        title,
+        summary,
+        content,
+        cover: newPath ? newPath : postDoc.cover,
+      }
+    );
+    res.json(postDoc);
+  });
+});
+
 app.get("/create", async (req, res) => {
   res.json(
     await PostModel.find()
@@ -101,10 +133,25 @@ app.get("/create", async (req, res) => {
   );
 });
 
-app.get("/post/:id", async (req, res) => {
+app.get("/create/:id", async (req, res) => {
   const { id } = req.params;
   const postDoc = await PostModel.findById(id).populate("author", ["username"]);
   res.json(postDoc);
+});
+
+app.delete("/create/:id", async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (error, info) => {
+    if (error) throw error;
+    const { id } = req.params;
+    const postDoc = await PostModel.findById(id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json("You are not the author");
+    }
+    await PostModel.deleteOne({ _id: id });
+    res.json({ message: "Post deleted successfully" });
+  });
 });
 
 app.listen(4000);
